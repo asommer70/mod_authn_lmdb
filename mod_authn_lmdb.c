@@ -84,7 +84,7 @@ static authn_status check_lmdb(request_rec *r, char *user, const char *password)
 
     // Setup the LMDB environment and DB connection.
     rc = mdb_env_create(&env);
-    rc = mdb_env_open(env, lmdb_conf.lmdb_dir, 0, 0664);
+    rc = mdb_env_open(env, lmdb_conf.lmdb_dir, MDB_RDONLY, 0664);
     if (rc) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, "Error with lmdb directory: %s", mdb_strerror(rc));
         return AUTH_GENERAL_ERROR;
@@ -92,7 +92,7 @@ static authn_status check_lmdb(request_rec *r, char *user, const char *password)
 
     // Query lmdb for the username.
     rc = mdb_txn_begin(env, NULL, 0, &txn);
-    rc = mdb_open(txn, NULL, 4, &dbi);
+    rc = mdb_open(txn, NULL, MDB_RDONLY, &dbi);
     rc = mdb_get(txn, dbi, &key, &data);
     if (rc != 0) {
         mdb_txn_abort(txn);
