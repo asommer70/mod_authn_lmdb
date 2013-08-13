@@ -91,8 +91,8 @@ static authn_status check_lmdb(request_rec *r, char *user, const char *password)
     }
 
     // Query lmdb for the username.
-    rc = mdb_txn_begin(env, NULL, 0, &txn);
-    rc = mdb_open(txn, NULL, MDB_RDONLY, &dbi);
+    rc = mdb_txn_begin(env, NULL, MDB_RDONLY, &txn);
+    rc = mdb_open(txn, NULL, 0, &dbi);
     rc = mdb_get(txn, dbi, &key, &data);
     if (rc != 0) {
         mdb_txn_abort(txn);
